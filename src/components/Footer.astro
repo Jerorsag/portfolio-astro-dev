@@ -1,0 +1,82 @@
+---
+import type { Footer } from '../types/global';
+import { getImageUrl } from '../services/global';
+
+interface Props {
+  footer: Footer;
+}
+
+const { footer } = Astro.props;
+---
+
+<footer class="bg-gray-800 text-white p-8">
+  <div class="max-w-6xl mx-auto">
+    <!-- Logos -->
+    {footer.logo.length > 0 && (
+      <div class="flex flex-wrap items-center justify-center md:justify-start mb-6 space-x-6">
+        {footer.logo.map(logo => (
+          <a href={logo.href} class="flex items-center">
+            {logo.icon.data && (
+              <img 
+                src={getImageUrl(logo.icon.data.attributes.url)} 
+                alt={logo.icon.data.attributes.alternativeText}
+                class="h-8 w-auto mr-2"
+              />
+            )}
+            <span>{logo.label}</span>
+          </a>
+        ))}
+      </div>
+    )}
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Navigation Links -->
+      <div>
+        <h3 class="font-semibold mb-4">Enlaces</h3>
+        <ul class="space-y-2">
+          {footer.navItems.map(item => (
+            <li>
+              <a 
+                href={item.href} 
+                class="text-gray-300 hover:text-white transition-colors"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Social Links -->
+      <div>
+        <h3 class="font-semibold mb-4">Síguenos</h3>
+        <div class="flex space-x-4">
+          {footer.socialLinks.map(social => (
+            <a 
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-gray-300 hover:text-white transition-colors"
+              title={social.label}
+            >
+              {social.icon.data && (
+                <img 
+                  src={getImageUrl(social.icon.data.attributes.url)} 
+                  alt={social.icon.data.attributes.alternativeText}
+                  class="h-6 w-6"
+                />
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Copyright Text -->
+      <div>
+        <p class="text-gray-300 text-sm">
+          {footer.text}
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,22 +1,53 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import { getGlobalData } from '../services/global';
+import Banner from '../components/Banner.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import "../styles/global.css";
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+
+// Obtener datos del global layout
+let globalData;
+try {
+  globalData = await getGlobalData();
+  console.log('🎯 Global data loaded successfully');
+} catch (error) {
+  console.error('❌ Failed to load global data:', error);
+  // Podríamos mostrar un fallback o lanzar el error
+  throw error;
+}
+
+const pageTitle = title || globalData.attributes.title;
+const pageDescription = description || globalData.attributes.description;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDescription}>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Banner -->
+  <Banner banner={globalData.attributes.banner} />
+  
+  <!-- Header -->
+  <Header header={globalData.attributes.header} />
+  
+  <!-- Main Content -->
+  <main class="flex-1">
+    <slot />
+  </main>
+  
+  <!-- Footer -->
+  <Footer footer={globalData.attributes.footer} />
+</body>
+</html>

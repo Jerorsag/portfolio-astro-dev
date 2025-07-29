@@ -1,0 +1,61 @@
+---
+import type { Header } from '../types/global';
+import { getImageUrl } from '../services/global';
+
+interface Props {
+  header: Header;
+}
+
+const { header } = Astro.props;
+---
+
+<header class="bg-white shadow-md p-4">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex items-center">
+      <a href={header.logo.href} class="flex items-center">
+        {header.logo.icon.data && (
+          <img 
+            src={getImageUrl(header.logo.icon.data.attributes.url)} 
+            alt={header.logo.icon.data.attributes.alternativeText}
+            class="h-8 w-auto mr-2"
+          />
+        )}
+        <span class="font-bold text-xl">{header.logo.label}</span>
+      </a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="hidden md:flex space-x-6">
+      {header.navItems.map(item => (
+        <a 
+          href={item.href} 
+          class="text-gray-700 hover:text-blue-600 transition-colors"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Social Links -->
+    <div class="flex space-x-4">
+      {header.socialLinks.map(social => (
+        <a 
+          href={social.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-gray-600 hover:text-blue-600 transition-colors"
+          title={social.label}
+        >
+          {social.icon.data && (
+            <img 
+              src={getImageUrl(social.icon.data.attributes.url)} 
+              alt={social.icon.data.attributes.alternativeText}
+              class="h-6 w-6"
+            />
+          )}
+        </a>
+      ))}
+    </div>
+  </div>
+</header>

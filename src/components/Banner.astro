@@ -1,0 +1,23 @@
+---
+import type { Banner } from '../types/global';
+
+interface Props {
+  banner: Banner;
+}
+
+const { banner } = Astro.props;
+---
+
+{banner.isVisible && (
+  <div class="bg-blue-600 text-white p-4 text-center">
+    <p class="mb-2">{banner.description}</p>
+    <a 
+      href={banner.link.href}
+      target={banner.link.isExternal ? '_blank' : '_self'}
+      rel={banner.link.isExternal ? 'noopener noreferrer' : undefined}
+      class="inline-block bg-white text-blue-600 px-4 py-2 rounded hover:bg-gray-100 transition-colors"
+    >
+      {banner.link.label}
+    </a>
+  </div>
+)}

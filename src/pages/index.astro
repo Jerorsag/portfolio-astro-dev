@@ -1,25 +1,40 @@
 ---
+import { getLandingPageData } from '../services/landing-page';
 import Layout from '../layouts/Layout.astro';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 
-// Data Method 2: Fetch Remote Data
-const res = await fetch("http://localhost:1337/api/global");
-const data = await res.json();
-console.log("data", data.data.attributes.banner);
-console.log("data", data.data.attributes.header);
-console.log("data", data.data.attributes.footer);
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+
+// Obtener datos del global layout
+let landingPageData;
+try {
+  landingPageData = await getLandingPageData();
+  console.log('🎯 Global data loaded successfully', landingPageData.attributes.blocks[0]);
+} catch (error) {
+  console.error('❌ Failed to load global data:', error);
+  // Podríamos mostrar un fallback o lanzar el error
+  throw error;
+}
+
+const pageTitle = title || landingPageData.attributes.title;
+const pageDescription = description || landingPageData.attributes.description;
 ---
 
 <Layout>
 	<div class="max-w-4xl mx-auto py-12 px-4">
     <div class="text-center">
       <h1 class="text-4xl font-bold text-gray-900 mb-4">
-        🎉 Conexión exitosa con Strapi
+        {landingPageData.attributes.blocks[0].heading}
       </h1>
       <p class="text-xl text-gray-600 mb-8">
-        El layout global se está renderizando correctamente desde tu backend
+        {landingPageData.attributes.blocks[0].description}
       </p>
       
       <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">

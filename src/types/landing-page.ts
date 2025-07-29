@@ -5,6 +5,9 @@ export interface StrapiMedia {
     attributes: {
       alternativeText: string;
       url: string;
+      name?: string;
+      mime?: string;
+      size?: number;
     };
   } | null;
 }
@@ -62,6 +65,9 @@ export interface Project {
     stackUsed: Technology[];
     image: ProjectImage[];
     linksProject: ProjectLink[];
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
   };
 }
 
@@ -115,15 +121,21 @@ export interface ContactBlock {
 // Union type para todos los bloques
 export type Block = HeroBlock | AboutBlock | ProjectBlock | ContactBlock;
 
-// Estructura completa de la Landing Page
+// Estructura completa de la Landing Page (coincide con la respuesta de tu API)
 export interface LandingPageData {
   id: number;
   attributes: {
     title: string;
     description: string;
+    blocks: Block[];
     createdAt: string;
     updatedAt: string;
     publishedAt: string;
-    blocks: Block[];
   };
+}
+
+// Tipo para la respuesta completa de la API
+export interface LandingPageApiResponse {
+  data: LandingPageData;
+  meta: Record<string, any>;
 }

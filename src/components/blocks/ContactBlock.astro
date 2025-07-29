@@ -1,0 +1,33 @@
+---
+import type { ContactBlock } from '../../types/landing-page';
+
+interface Props {
+  block: ContactBlock;
+}
+
+const { block } = Astro.props;
+---
+
+<section class="py-20 bg-gray-900 text-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold mb-4">
+        {block.heading}
+      </h2>
+      <p class="text-xl text-gray-300">
+        {block.description}
+      </p>
+    </div>
+    
+    <div class="bg-gray-800 rounded-lg p-8">
+      <div class="text-center">
+        <div class="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium mb-4">
+          🚧 ContactBlock - En desarrollo
+        </div>
+        <p class="text-gray-300">
+          Este bloque incluirá un formulario de contacto.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

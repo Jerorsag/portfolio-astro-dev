@@ -1,0 +1,36 @@
+---
+import type { ProjectBlock } from '../../types/landing-page';
+
+interface Props {
+  block: ProjectBlock;
+}
+
+const { block } = Astro.props;
+---
+
+<section class="py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-gray-900 mb-4">
+        {block.heading}
+      </h2>
+      <p class="text-xl text-gray-600">
+        {block.description}
+      </p>
+    </div>
+    
+    <div class="bg-gray-50 rounded-lg p-8">
+      <div class="text-center">
+        <div class="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium mb-4">
+          🚧 ProjectBlock - En desarrollo
+        </div>
+        <p class="text-gray-600">
+          Este bloque mostrará tu portafolio de proyectos.
+        </p>
+        <div class="mt-4 text-sm text-gray-500">
+          Proyectos encontrados: {block.proyectos?.data?.length || 0}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

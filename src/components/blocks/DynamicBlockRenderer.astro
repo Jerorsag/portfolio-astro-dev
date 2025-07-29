@@ -1,0 +1,107 @@
+---
+import type { Block } from '../../types/landing-page';
+
+// Importar todos los componentes de bloques
+import HeroBlock from './HeroBlock.astro';
+import AboutBlock from './AboutBlock.astro';
+import ProjectBlock from './ProjectBlock.astro';
+import ContactBlock from './ContactBlock.astro';
+
+interface Props {
+  blocks: Block[];
+}
+
+const { blocks } = Astro.props;
+
+// Mapear componentes por tipo
+const componentMap = {
+  'blocks.hero': HeroBlock,
+  'blocks.about': AboutBlock,
+  'blocks.project': ProjectBlock,
+  'blocks.contact': ContactBlock,
+} as const;
+
+// Función para obtener el componente correcto
+function getBlockComponent(block: Block) {
+  const componentType = block.__component as keyof typeof componentMap;
+  return componentMap[componentType];
+}
+---
+
+<!-- Renderizar cada bloque dinámicamente -->
+{blocks.map((block, index) => {
+  const BlockComponent = getBlockComponent(block);
+  
+  if (!BlockComponent) {
+    console.warn(`Componente no encontrado para el tipo: ${block.__component}`);
+    return null;
+  }
+
+  // Determinar si es el último bloque para ajustar spacing
+  const isLastBlock = index === blocks.length - 1;
+  
+  return (
+    <section 
+      class={`block-section ${isLastBlock ? '' : 'mb-0'}`}
+      data-block-type={block.__component}
+      data-block-id={block.id}
+    >
+      <BlockComponent block={block} />
+    </section>
+  );
+})}
+
+<style>
+  /* Estilos base para las secciones de bloques */
+  .block-section {
+    position: relative;
+    width: 100%;
+  }
+
+  /* Espaciado entre bloques - puede ser personalizado por bloque */
+  .block-section:not(:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* Transiciones suaves para cuando se carguen los bloques */
+  .block-section {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  /* Estado de carga inicial */
+  .block-section.loading {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+</style>
+
+<script>
+  // Animación de entrada progresiva para los bloques
+  document.addEventListener('DOMContentLoaded', () => {
+    const blocks = document.querySelectorAll('.block-section');
+    
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -10% 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('loading');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    blocks.forEach((block, index) => {
+      // Añadir un pequeño delay progresivo
+      setTimeout(() => {
+        block.classList.add('loading');
+        observer.observe(block);
+      }, index * 100);
+    });
+  });
+</script>

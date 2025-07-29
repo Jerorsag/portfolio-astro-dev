@@ -11,34 +11,38 @@ const { footer } = Astro.props;
 
 <footer class="bg-gray-800 text-white p-8">
   <div class="max-w-6xl mx-auto">
-    <!-- Logos -->
-    {footer.logo.length > 0 && (
-      <div class="flex flex-wrap items-center justify-center md:justify-start mb-6 space-x-6">
-        {footer.logo.map(logo => (
-          <a href={logo.href} class="flex items-center">
-            {logo.icon.data && (
-              <img 
-                src={getImageUrl(logo.icon.data.attributes.url)} 
-                alt={logo.icon.data.attributes.alternativeText}
-                class="h-8 w-auto mr-2"
-              />
-            )}
-            <span>{logo.label}</span>
-          </a>
-        ))}
+    <!-- Sección superior -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      
+      <!-- Logo - Izquierda -->
+      <div class="flex flex-col">
+        {footer.logo.length > 0 && (
+          <div class="flex flex-col space-y-4">
+            {footer.logo.map(logo => (
+              <a href={logo.href} class="flex items-center hover:opacity-80 transition-opacity">
+                {logo.icon.data && (
+                  <img 
+                    src={getImageUrl(logo.icon.data.attributes.url)} 
+                    alt={logo.icon.data.attributes.alternativeText}
+                    class="h-8 w-auto mr-3"
+                  />
+                )}
+                <span class="font-semibold text-lg">{logo.label}</span>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
-    )}
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Navigation Links -->
-      <div>
-        <h3 class="font-semibold mb-4">Enlaces</h3>
-        <ul class="space-y-2">
+      <!-- Enlaces - Centro -->
+      <div class="flex flex-col">
+        <h3 class="font-semibold mb-4 text-white">Enlaces</h3>
+        <ul class="space-y-3">
           {footer.navItems.map(item => (
             <li>
               <a 
                 href={item.href} 
-                class="text-gray-300 hover:text-white transition-colors"
+                class="text-gray-300 hover:text-white transition-colors text-sm"
               >
                 {item.label}
               </a>
@@ -47,16 +51,16 @@ const { footer } = Astro.props;
         </ul>
       </div>
 
-      <!-- Social Links -->
-      <div>
-        <h3 class="font-semibold mb-4">Síguenos</h3>
-        <div class="flex space-x-4">
+      <!-- Social Links - Derecha -->
+      <div class="flex flex-col">
+        <h3 class="font-semibold mb-4 text-white">Sígueme</h3>
+        <div class="flex space-x-2">
           {footer.socialLinks.map(social => (
             <a 
               href={social.href}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-gray-300 hover:text-white transition-colors"
+              class="text-gray-300 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-700"
               title={social.label}
             >
               {social.icon.data && (
@@ -70,10 +74,13 @@ const { footer } = Astro.props;
           ))}
         </div>
       </div>
+    </div>
 
-      <!-- Copyright Text -->
-      <div>
-        <p class="text-gray-300 text-sm">
+    <!-- Separador -->
+    <div class="border-t border-gray-700 pt-6">
+      <!-- Copyright - Centro abajo -->
+      <div class="text-center">
+        <p class="text-gray-400 text-sm">
           {footer.text}
         </p>
       </div>

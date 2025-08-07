@@ -1,5 +1,6 @@
 ---
 import type { AboutBlock } from '../../types/landing-page';
+import { getImageUrl } from '../../services/landing-page';
 
 interface Props {
   block: AboutBlock;
@@ -8,26 +9,61 @@ interface Props {
 const { block } = Astro.props;
 ---
 
-<section class="py-20 bg-gray-50">
-  <div class="max-w-6xl mx-auto px-4">
-    <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold text-gray-900 mb-4">
+<section id="about" class="py-24 md:py-32 bg-slate-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 md:mb-20">
+      <h2
+        class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-md"
+      >
         {block.heading}
       </h2>
-      <p class="text-xl text-gray-600">
-        {block.subtitle}
-      </p>
     </div>
-    
-    <div class="bg-white rounded-lg shadow-lg p-8">
-      <div class="text-center">
-        <div class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-4">
-          🚧 AboutBlock - En desarrollo
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
+      <div class="space-y-8">
+        <p class="text-slate-300 leading-relaxed text-lg lg:text-xl">{block.description}</p>
+        
+        <div class="flex flex-wrap gap-3">
+          {block.softSkills.map((skill) => (
+            <span
+              class="inline-flex items-center px-4 py-2 bg-blue-600/20 text-blue-300 font-semibold text-sm rounded-full border border-blue-600 shadow-inner hover:scale-102 transition-transform duration-200 ease-in-out"
+            >
+              {skill.name}
+            </span>
+          ))}
         </div>
-        <p class="text-gray-600">
-          {block.description}
-        </p>
+      </div>
+
+      <div class="lg:w-full">
+        <div class="relative">
+          <div
+            class="technologies-container flex flex-wrap gap-6 justify-center lg:justify-start"
+          >
+            {block.technologies.map((tech) => (
+              <div
+                class="flex items-center justify-center p-2 transition-transform duration-200 ease-in-out hover:scale-105 cursor-pointer"
+              >
+                <img
+                  src={getImageUrl(tech.icon.data.attributes.url)}
+                  alt={tech.name}
+                  class="w-12 h-12 text-blue-400"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* CSS para el desplazamiento del carrusel (si se requiere en el futuro) */
+  .technologies-container {
+    -ms-overflow-style: none; /* IE y Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .technologies-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari y Opera */
+  }
+</style>

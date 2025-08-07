@@ -1,36 +1,114 @@
 ---
 import type { ProjectBlock } from '../../types/landing-page';
+import { getImageUrl } from '../../services/landing-page';
+import { getImage } from 'astro:assets';
 
 interface Props {
   block: ProjectBlock;
 }
 
 const { block } = Astro.props;
+
+// console.log(block.proyectos.data[0].attributes.image[0].image.data?.attributes.url)
+// block.proyectos.data[0].attributes.image[0].image.data?.attributes.url
+
+// block.proyectos?.data?.map((project) => {
+//   project.attributes.stackUsed.map((tech) => {
+//     console.log(tech.icon.data?.attributes.url);
+//   });
+// });
+
+block.proyectos?.data?.map((project) => {
+  console.log(project.attributes.title);
+});
+
 ---
 
-<section class="py-20 bg-white">
-  <div class="max-w-6xl mx-auto px-4">
-    <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold text-gray-900 mb-4">
+<section id="projects" class="py-24 md:py-32 bg-slate-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 md:mb-20">
+      <h2
+        class="text-4xl md:text-5xl font-extrabold text-white mb-4 drop-shadow-md"
+      >
         {block.heading}
       </h2>
-      <p class="text-xl text-gray-600">
+      <p class="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
         {block.description}
       </p>
     </div>
-    
-    <div class="bg-gray-50 rounded-lg p-8">
-      <div class="text-center">
-        <div class="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium mb-4">
-          🚧 ProjectBlock - En desarrollo
-        </div>
-        <p class="text-gray-600">
-          Este bloque mostrará tu portafolio de proyectos.
-        </p>
-        <div class="mt-4 text-sm text-gray-500">
-          Proyectos encontrados: {block.proyectos?.data?.length || 0}
-        </div>
+
+    <div class="relative">
+      <div
+        class="projects-carousel flex flex-nowrap gap-8 overflow-x-auto snap-x snap-mandatory pb-6"
+      >
+        {block.proyectos?.data?.map((project) => (
+          <div
+            class="project-card flex-shrink-0 snap-center w-full sm:w-[80%] md:w-[60%] lg:w-[50%] xl:w-[40%] 2xl:w-[35%] bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 ease-in-out p-6"
+          >
+            <h3 class="text-2xl font-bold text-center text-white mb-6">
+              {project.attributes.title}
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+              <div class="rounded-xl overflow-hidden shadow-lg border border-white/5">
+                <img
+                  src={getImageUrl(project.attributes.image.image.data?.attributes.url)}
+                  alt={project.attributes.image.title}
+                  class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
+
+              <div class="flex flex-col justify-between">
+                <div>
+                  <p class="text-slate-300 leading-relaxed mb-4">
+                    {project.attributes.description}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    {project.attributes.stackUsed.map((tech) => (
+                      <img
+                        src={getImageUrl(tech.icon.data?.attributes.url)}
+                        alt={tech.name}
+                        class="w-8 h-8 text-blue-400"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 mt-8">
+              {project.attributes.linksProject.map((link) => (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class={`flex-1 text-center py-3 rounded-lg font-bold text-white transition-all duration-200 ease-in-out
+                    ${link.type === 'GITHUB'
+                      ? 'bg-white/10 border border-white/20 hover:bg-white/20 hover:border-white/30'
+                      : 'bg-gradient-to-r from-blue-600 to-cyan-600 shadow-md hover:shadow-lg'
+                    }
+                  `}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
+      <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-slate-900 to-transparent pointer-events-none"></div>
     </div>
   </div>
 </section>
+
+<style>
+  /* Oculta la barra de scroll del carrusel */
+  .projects-carousel {
+    -ms-overflow-style: none; /* IE y Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .projects-carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari y Opera */
+  }
+</style>

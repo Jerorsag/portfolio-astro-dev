@@ -1,6 +1,6 @@
 ---
+import { MoveDown } from '@lucide/astro';
 import type { HeroBlock } from '../../types/landing-page';
-import { getImageUrl } from '../../services/landing-page';
 
 interface Props {
   block: HeroBlock;
@@ -9,159 +9,129 @@ interface Props {
 const { block } = Astro.props;
 ---
 
-<section class="hero-section relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
-  <!-- Efectos de fondo animados -->
-  <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.1),transparent_50%)]"></div>
-  <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(139,92,246,0.1),transparent_50%)]"></div>
-  
-  <!-- Partículas flotantes -->
+<section
+  class="hero-section relative min-h-screen flex items-center justify-center text-center overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-slate-800 px-4 py-20 lg:py-0"
+>
   <div class="absolute inset-0 overflow-hidden">
     <div class="floating-particles">
-      {Array.from({ length: 12 }).map((_, i) => (
-        <div 
-          class={`particle particle-${i + 1}`}
-          style={`--delay: ${i * 0.5}s; --duration: ${8 + (i % 4) * 2}s;`}
-        ></div>
-      ))}
+      {
+        Array.from({ length: 12 }).map((_, i) => (
+          <div
+            class={`particle particle-${i + 1}`}
+            style={`--delay: ${i * 0.5}s; --duration: ${8 + (i % 4) * 2}s;`}
+          ></div>
+        ))
+      }
     </div>
   </div>
 
-  <!-- Contenido principal -->
-  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-      
-      <!-- Contenido textual -->
-      <div class="text-center lg:text-left space-y-8">
-        <!-- Título principal -->
-        <div class="space-y-4">
-          <h1 class="hero-title text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">
-            {block.heading.split(' ').map((word, index) => (
-              <span 
-                class="inline-block word-animate" 
-                style={`--word-delay: ${index * 0.1}s;`}
-              >
-                {word}&nbsp;
-              </span>
-            ))}
-          </h1>
-          
-          <!-- Descripción -->
-          <p class="hero-description text-lg sm:text-xl lg:text-2xl text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-            {block.description}
-          </p>
-        </div>
+  <div class="relative z-10 max-w-6xl mx-auto space-y-8">
+    <div class="space-y-6">
+      <h1
+        class="hero-title text-5xl md:text-6xl xl:text-7xl font-extrabold leading-tight text-white drop-shadow-md"
+      >
+        {block.heading.split(' ').map((word, index) => (
+          <span
+            class="inline-block word-animate"
+            style={`--word-delay: ${index * 0.1}s;`}
+          >
+            {word}&nbsp;
+          </span>
+        ))}
+      </h1>
 
-        <!-- Enlaces/CTAs -->
-        {block.links && block.links.length > 0 && (
-          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            {block.links.map((link, index) => (
-              <a
-                href={link.href}
-                target={link.isExternal ? '_blank' : '_self'}
-                rel={link.isExternal ? 'noopener noreferrer' : undefined}
-                class={`
-                  group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 ease-out transform hover:scale-105 hover:shadow-2xl
-                  ${link.type === 'PRIMARY' 
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/25' 
-                    : 'bg-white/10 backdrop-blur-sm text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40'
-                  }
-                  cta-animate
-                `}
-                style={`--cta-delay: ${index * 0.2}s;`}
-              >
-                <span>{link.label}</span>
-                {link.isExternal && (
-                  <svg class="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                )}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <!-- Imagen/Avatar -->
-      {block.image?.data && (
-        <div class="relative flex justify-center lg:justify-end">
-          <div class="hero-image-container relative">
-            <!-- Efectos de fondo para la imagen -->
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full blur-3xl scale-110"></div>
-            <div class="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 to-pink-500/10 rounded-full blur-2xl scale-125 animate-pulse"></div>
-            
-            <!-- Imagen principal -->
-            <div class="relative z-10 hero-image rounded-full overflow-hidden border-4 border-white/20 shadow-2xl shadow-blue-900/50">
-              <img
-                src={getImageUrl(block.image.data.attributes.url)}
-                alt={block.image.data.attributes.alternativeText || 'Hero image'}
-                class="w-full h-full object-cover"
-                loading="eager"
-              />
-            </div>
-
-            <!-- Anillos decorativos -->
-            <div class="absolute inset-0 rounded-full border border-white/10 ring-animation"></div>
-            <div class="absolute inset-0 rounded-full border border-white/5 ring-animation" style="--ring-delay: 1s;"></div>
-          </div>
-        </div>
-      )}
+      <p
+        class="hero-description text-xl md:text-xl lg:text-2xl text-slate-300 max-w-4xl mx-auto leading-relaxed"
+      >
+        <Fragment set:html={block.description} />
+      </p>
     </div>
+
+    {
+      block.links && block.links.length > 0 && (
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          {block.links.map((link, index) => (
+            <a
+              href={link.href}
+              target={link.isExternal ? '_blank' : '_self'}
+              rel={link.isExternal ? 'noopener noreferrer' : undefined}
+              class={`
+                group relative inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 ease-out transform hover:scale-102 cta-animate
+                max-w-xs mx-auto sm:max-w-none sm:mx-0
+                ${
+                  link.type === 'PRIMARY'
+                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40'
+                    : 'bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20 hover:border-white/30'
+                }
+              `}
+              style={`--cta-delay: ${index * 0.2}s;`}
+            >
+              <span class="relative z-10">{link.label}</span>
+              {link.isExternal && (
+                <svg
+                  class="relative z-10 w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  />
+                </svg>
+              )}
+            </a>
+          ))}
+        </div>
+      )
+    }
   </div>
 
-  <!-- Indicador de scroll -->
-  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/60 animate-bounce">
-    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+  <div
+    class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/60 animate-bounce"
+  >
+    <MoveDown class="w-6 h-6" />
     </svg>
   </div>
 </section>
 
 <style>
-  /* Animaciones de entrada */
+  /* Animaciones de entrada de texto */
   .word-animate {
     opacity: 0;
     transform: translateY(30px);
     animation: wordSlideIn 0.8s ease-out forwards;
     animation-delay: var(--word-delay, 0s);
   }
-
   .hero-description {
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 1s ease-out 0.5s forwards;
   }
-
   .cta-animate {
     opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.8s ease-out forwards;
+    transform: translateY(20px) scale(0.95);
+    animation: ctaSlideIn 0.8s ease-out forwards;
     animation-delay: calc(0.8s + var(--cta-delay, 0s));
   }
 
-  .hero-image-container {
-    opacity: 0;
-    transform: scale(0.8);
-    animation: imageScale 1.2s ease-out 0.3s forwards;
+  /* Keyframes */
+  @keyframes wordSlideIn {
+    to { opacity: 1; transform: translateY(0); }
   }
-
-  /* Imagen del hero */
-  .hero-image {
-    width: 300px;
-    height: 300px;
+  @keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
   }
-
-  @media (min-width: 640px) {
-    .hero-image {
-      width: 350px;
-      height: 350px;
-    }
+  @keyframes ctaSlideIn {
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
-
-  @media (min-width: 1024px) {
-    .hero-image {
-      width: 400px;
-      height: 400px;
-    }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.1; }
+    25% { transform: translateY(-20px) translateX(10px); opacity: 0.3; }
+    50% { transform: translateY(-10px) translateX(-10px); opacity: 0.1; }
+    75% { transform: translateY(-30px) translateX(5px); opacity: 0.2; }
   }
 
   /* Partículas flotantes */
@@ -170,17 +140,14 @@ const { block } = Astro.props;
     width: 100%;
     height: 100%;
   }
-
   .particle {
     position: absolute;
     width: 4px;
     height: 4px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
-    animation: float var(--duration, 10s) infinite linear;
-    animation-delay: var(--delay, 0s);
+    animation: float var(--duration, 10s) infinite linear var(--delay, 0s);
   }
-
   .particle::before {
     content: '';
     position: absolute;
@@ -189,6 +156,10 @@ const { block } = Astro.props;
     background: inherit;
     border-radius: 50%;
     animation: pulse 2s infinite ease-in-out;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.1; }
+    50% { transform: scale(1.5); opacity: 0.3; }
   }
 
   /* Posicionamiento de partículas */
@@ -204,88 +175,4 @@ const { block } = Astro.props;
   .particle-10 { top: 55%; left: 25%; }
   .particle-11 { top: 25%; left: 15%; }
   .particle-12 { top: 75%; left: 85%; }
-
-  /* Anillos decorativos */
-  .ring-animation {
-    animation: ring 3s infinite ease-in-out;
-    animation-delay: var(--ring-delay, 0s);
-  }
-
-  /* Keyframes */
-  @keyframes wordSlideIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeInUp {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes imageScale {
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0px) translateX(0px);
-      opacity: 0.1;
-    }
-    25% {
-      transform: translateY(-20px) translateX(10px);
-      opacity: 0.3;
-    }
-    50% {
-      transform: translateY(-10px) translateX(-10px);
-      opacity: 0.1;
-    }
-    75% {
-      transform: translateY(-30px) translateX(5px);
-      opacity: 0.2;
-    }
-  }
-
-  @keyframes pulse {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 0.1;
-    }
-    50% {
-      transform: scale(1.5);
-      opacity: 0.3;
-    }
-  }
-
-  @keyframes ring {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 0.1;
-    }
-    50% {
-      transform: scale(1.05);
-      opacity: 0.2;
-    }
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 1023px) {
-    .hero-image {
-      width: 280px;
-      height: 280px;
-    }
-  }
-
-  @media (max-width: 639px) {
-    .hero-image {
-      width: 250px;
-      height: 250px;
-    }
-  }
 </style>

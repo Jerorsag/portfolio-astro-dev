@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "astro": "^5.12.4",
     "axios": "^1.11.0",
+    "hammerjs": "^2.0.8",
     "tailwindcss": "^4.1.11"
   }
 }

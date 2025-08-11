@@ -115,6 +115,7 @@ export interface ContactBlock {
   heading: string;
   description: string;
   hubspotFormId: string;
+  portalId: string;
   successMessage: string;
 }
 

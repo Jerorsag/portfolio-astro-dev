@@ -34,6 +34,16 @@ const pageDescription = description || globalData.attributes.description;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{pageTitle}</title>
   <meta name="description" content={pageDescription}>
+
+  <!-- Google tag (gtag.js) -->
+  <script type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-1PPT8MTC4Q"></script>
+  <script type="text/partytown">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1PPT8MTC4Q');
+  </script>
 </head>
 <body class="min-h-screen flex flex-col">
   <!-- Banner -->

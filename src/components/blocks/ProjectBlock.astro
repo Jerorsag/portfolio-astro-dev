@@ -103,7 +103,6 @@ const { block } = Astro.props;
   </div>
 </section>
 
-
 <script>
   import Hammer from 'hammerjs';
 
@@ -119,7 +118,6 @@ const { block } = Astro.props;
     let cardCount = 0;
     let scrollTimeout;
 
-    // Mejor cálculo de tarjetas visibles
     const getVisibleCardsCount = () => {
       const screenWidth = window.innerWidth;
       if (screenWidth >= 1024) return 3;
@@ -127,19 +125,23 @@ const { block } = Astro.props;
       return 1;
     };
 
-    // Mejor cálculo de ancho de tarjeta usando getBoundingClientRect
     const getCardWidth = () => {
       const card = cards[0];
       if (!card) return 0;
       return card.getBoundingClientRect().width + parseInt(getComputedStyle(carousel).gap || 24);
     };
 
-    // Actualiza la UI y accesibilidad
     const updateUI = () => {
-      prevButton.setAttribute('aria-disabled', currentCardIndex === 0 ? 'true' : 'false');
-      nextButton.setAttribute('aria-disabled', currentCardIndex >= cardCount - 1 ? 'true' : 'false');
-      prevButton.tabIndex = currentCardIndex === 0 ? -1 : 0;
-      nextButton.tabIndex = currentCardIndex >= cardCount - 1 ? -1 : 0;
+      const isMobileOrTablet = window.innerWidth < 1024;
+
+      // Ocultar botones en móvil/tablet
+      prevButton.style.display = isMobileOrTablet
+        ? "none"
+        : (currentCardIndex === 0 ? "none" : "block");
+
+      nextButton.style.display = isMobileOrTablet
+        ? "none"
+        : (currentCardIndex >= cardCount - 1 ? "none" : "block");
 
       dotsContainer.querySelectorAll('button').forEach((dot, index) => {
         dot.classList.toggle('bg-white', index === currentCardIndex);
@@ -148,7 +150,6 @@ const { block } = Astro.props;
       });
     };
 
-    // Inicializa los dots
     const initializeDots = () => {
       dotsContainer.innerHTML = '';
       const totalDots = cards.length - visibleCardsCount + 1;
@@ -161,7 +162,6 @@ const { block } = Astro.props;
       }
     };
 
-    // Actualiza el carrusel
     const updateCarousel = () => {
       visibleCardsCount = getVisibleCardsCount();
       cardCount = cards.length - visibleCardsCount + 1;
@@ -169,7 +169,6 @@ const { block } = Astro.props;
       updateUI();
     };
 
-    // Scroll a la tarjeta
     const scrollToCard = (index) => {
       const maxIndex = cards.length - visibleCardsCount;
       if (index < 0) index = 0;
@@ -182,11 +181,10 @@ const { block } = Astro.props;
       updateUI();
     };
 
-    // Listeners de botones
+    // Botones en escritorio
     prevButton.addEventListener('click', () => scrollToCard(currentCardIndex - 1));
     nextButton.addEventListener('click', () => scrollToCard(currentCardIndex + 1));
 
-    // Accesibilidad con teclado
     prevButton.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') scrollToCard(currentCardIndex - 1);
     });
@@ -194,27 +192,30 @@ const { block } = Astro.props;
       if (e.key === 'Enter' || e.key === ' ') scrollToCard(currentCardIndex + 1);
     });
 
-    // Hammer.js: swipe y pan
-    const hammertime = new Hammer(carousel);
-    hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL, threshold: 10 });
-    hammertime.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL, threshold: 1 });
+    const initTouchEvents = () => {
+      const isMobileOrTablet = window.innerWidth < 1024;
+      if (!isMobileOrTablet) return;
 
-    hammertime.on('swipeleft', () => scrollToCard(currentCardIndex + 1));
-    hammertime.on('swiperight', () => scrollToCard(currentCardIndex - 1));
+      const hammertime = new Hammer(carousel);
+      hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL, threshold: 10 });
+      hammertime.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL, threshold: 1 });
 
-    let panStartScroll = 0;
-    hammertime.on('panstart', () => {
-      panStartScroll = carousel.scrollLeft;
-    });
-    hammertime.on('panmove', (ev) => {
-      carousel.scrollLeft = panStartScroll - ev.deltaX;
-    });
-    hammertime.on('panend', () => {
-      const nearestIndex = Math.round(carousel.scrollLeft / getCardWidth());
-      scrollToCard(nearestIndex);
-    });
+      hammertime.on('swipeleft', () => scrollToCard(currentCardIndex + 1));
+      hammertime.on('swiperight', () => scrollToCard(currentCardIndex - 1));
 
-    // Mejor detección de scroll final
+      let panStartScroll = 0;
+      hammertime.on('panstart', () => {
+        panStartScroll = carousel.scrollLeft;
+      });
+      hammertime.on('panmove', (ev) => {
+        carousel.scrollLeft = panStartScroll - ev.deltaX;
+      });
+      hammertime.on('panend', () => {
+        const nearestIndex = Math.round(carousel.scrollLeft / getCardWidth());
+        scrollToCard(nearestIndex);
+      });
+    };
+
     carousel.addEventListener('scroll', () => {
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
@@ -230,6 +231,7 @@ const { block } = Astro.props;
 
     updateCarousel();
     scrollToCard(0);
+    initTouchEvents();
   });
 </script>
 

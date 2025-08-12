@@ -43,7 +43,7 @@ const { block } = Astro.props;
         </div>
         
         <button type="submit" id="submit-button"
-                class="w-full py-3 px-4 rounded-lg font-bold text-white transition-all duration-200 ease-in-out bg-gradient-to-r from-blue-600 to-cyan-600 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+                class="w-full py-3 px-4 rounded-lg font-bold text-white transition-all duration-200 ease-in-out bg-gradient-to-r from-blue-600 to-cyan-600 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 cursor-pointer">
           Send Message
         </button>
       </form>
@@ -76,8 +76,11 @@ const { block } = Astro.props;
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
+        // Ocultar mensajes previos
         successMessage.classList.add('hidden');
         errorMessage.classList.add('hidden');
+
+        // Mostrar "Sending..."
         loadingMessage.classList.remove('hidden');
         submitButton.disabled = true;
 
@@ -99,26 +102,34 @@ const { block } = Astro.props;
         try {
           const response = await fetch(url, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
           });
 
           if (response.ok) {
-            form.reset();
-            loadingMessage.classList.add('hidden');
-            successMessage.classList.remove('hidden');
+            // Mostrar "Sending..." por 1 segundo
+            setTimeout(() => {
+              loadingMessage.classList.add('hidden');
+              successMessage.classList.remove('hidden');
+              form.reset();
+
+              // Mostrar éxito por 3 segundos
+              setTimeout(() => {
+                successMessage.classList.add('hidden');
+                submitButton.disabled = false;
+              }, 3000);
+
+            }, 1000);
           } else {
             console.error('Error submitting form to HubSpot:', response.statusText);
             loadingMessage.classList.add('hidden');
             errorMessage.classList.remove('hidden');
+            submitButton.disabled = false;
           }
         } catch (error) {
           console.error('Network error submitting form:', error);
           loadingMessage.classList.add('hidden');
           errorMessage.classList.remove('hidden');
-        } finally {
           submitButton.disabled = false;
         }
       });
